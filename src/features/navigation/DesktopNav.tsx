@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useDevice } from '@/core/hooks/useDevice'
 
 const navLinks = [
@@ -12,6 +13,7 @@ const navLinks = [
 
 export function DesktopNav() {
   const [scrolled, setScrolled] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const { isHydrated } = useDevice()
 
   useEffect(() => {
@@ -19,6 +21,14 @@ export function DesktopNav() {
       setScrolled(window.scrollY > 60)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
+    
+    // Check auth status
+    const user = localStorage.getItem('portal_user')
+    if (user) {
+      const userData = JSON.parse(user)
+      setIsLoggedIn(userData.isLoggedIn)
+    }
+    
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -52,7 +62,7 @@ export function DesktopNav() {
         ST<em style={{ color: 'var(--orange)', fontStyle: 'normal' }}>.</em> TERESA'S <em style={{ color: 'var(--orange)', fontStyle: 'normal' }}>TT</em>
       </a>
 
-      <ul style={{ display: 'flex', gap: '8px', listStyle: 'none' }}>
+      <ul style={{ display: 'flex', gap: '8px', listStyle: 'none', alignItems: 'center' }}>
         {navLinks.map(link => (
           <li key={link.href}>
             <a
@@ -75,6 +85,50 @@ export function DesktopNav() {
             </a>
           </li>
         ))}
+        {!isLoggedIn && (
+          <li>
+            <Link
+              href="/login"
+              style={{
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '10px 22px',
+                textDecoration: 'none',
+                fontFamily: 'var(--f-ui)',
+                fontSize: '13px',
+                fontWeight: 400,
+                color: 'var(--orange)',
+                letterSpacing: '.04em',
+                transition: 'color 0.3s',
+              }}
+            >
+              <span>Login</span>
+            </Link>
+          </li>
+        )}
+        {isLoggedIn && (
+          <li>
+            <Link
+              href="/portal"
+              style={{
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '10px 22px',
+                textDecoration: 'none',
+                fontFamily: 'var(--f-ui)',
+                fontSize: '13px',
+                fontWeight: 400,
+                color: 'var(--orange)',
+                letterSpacing: '.04em',
+                transition: 'color 0.3s',
+              }}
+            >
+              <span>My Portal</span>
+            </Link>
+          </li>
+        )}
       </ul>
 
       <a

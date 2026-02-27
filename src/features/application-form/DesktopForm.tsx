@@ -1,51 +1,34 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 
-interface FormField {
-  name: string
-  label: string
-  type: 'text' | 'email' | 'tel' | 'select' | 'textarea'
-  placeholder?: string
-  options?: string[]
-  required?: boolean
-}
-
-const formFields: FormField[] = [
-  { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Enter your full name', required: true },
-  { name: 'email', label: 'Email Address', type: 'email', placeholder: 'you@example.com', required: true },
-  { name: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+254 XXX XXX XXX', required: false },
-  { name: 'program', label: 'Program Interest', type: 'select', required: true, options: ['Foundation (Ages 8-16)', 'Competitive (16+)', 'APEX Squad (Elite)'] },
-  { name: 'level', label: 'Current Playing Level', type: 'select', required: true, options: ['Beginner', 'Intermediate', 'Advanced', 'Competitive'] },
-  { name: 'message', label: 'Tell Us About Yourself', type: 'textarea', placeholder: 'Describe your training goals, current experience, or any questions...', required: false },
+const programs = [
+  { id: 'foundation', title: 'Foundation', subtitle: 'Ages 8-16', desc: 'Build fundamentals' },
+  { id: 'competitive', title: 'Competitive', subtitle: '16+', desc: 'Tournament training' },
+  { id: 'apex', title: 'APEX Squad', subtitle: 'Elite', desc: 'Championship pathway' },
 ]
 
 export function DesktopForm() {
-  const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
   const [formData, setFormData] = useState<Record<string, string>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [selectedProgram, setSelectedProgram] = useState('')
   
-  const modalRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
-    if (!modalRef.current) return
-
-    if (isOpen) {
-      gsap.fromTo(modalRef.current, 
-        { opacity: 0 },
-        { opacity: 1, duration: 0.3 }
-      )
-      gsap.fromTo(contentRef.current,
-        { opacity: 0, y: 30, scale: 0.95 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'power3.out', delay: 0.1 }
-      )
-    }
-  }, [isOpen])
+    if (!containerRef.current) return
+    gsap.fromTo(containerRef.current, 
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+    )
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -57,14 +40,10 @@ export function DesktopForm() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
-    formFields.forEach(field => {
-      if (field.required && !formData[field.name]?.trim()) {
-        newErrors[field.name] = `${field.label} is required`
-      }
-      if (field.type === 'email' && formData[field.name] && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData[field.name])) {
-        newErrors[field.name] = 'Please enter a valid email'
-      }
-    })
+    if (!formData.name?.trim()) newErrors.name = 'Required'
+    if (!formData.email?.trim()) newErrors.email = 'Required'
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email'
+    if (!selectedProgram) newErrors.program = 'Select a program'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -72,300 +51,233 @@ export function DesktopForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return
-
     setIsSubmitting(true)
-    
     await new Promise(resolve => setTimeout(resolve, 1500))
-    
     setIsSubmitting(false)
     setIsSubmitted(true)
   }
 
-  const closeModal = () => {
-    gsap.to(contentRef.current, {
-      opacity: 0,
-      y: 20,
-      scale: 0.95,
-      duration: 0.3,
-      onComplete: () => {
-        setIsOpen(false)
-        setIsSubmitted(false)
-        setFormData({})
-      }
-    })
-  }
-
-  if (!isOpen) {
-    return (
-      <button
-        onClick={() => setIsOpen(true)}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '16px',
-          background: 'var(--chalk)',
-          color: 'var(--ink)',
-          border: 'none',
-          padding: '20px 44px',
-          borderRadius: '99px',
-          fontFamily: 'var(--f-ui)',
-          fontSize: '15px',
-          fontWeight: 700,
-          letterSpacing: '.04em',
-          cursor: 'pointer',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <span style={{ position: 'relative', zIndex: 1 }}>Start Your Application</span>
-        <span style={{
-          position: 'relative',
-          zIndex: 1,
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          background: 'var(--orange)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '14px',
-        }}>→</span>
-      </button>
-    )
-  }
-
   return (
-    <div 
-      ref={modalRef}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.85)',
-        backdropFilter: 'blur(8px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 10000,
-        padding: '24px',
-      }}
-      onClick={(e) => e.target === e.currentTarget && closeModal()}
-    >
-      <div 
-        ref={contentRef}
-        style={{
-          background: 'var(--plate)',
-          borderRadius: '12px',
-          padding: '48px',
-          maxWidth: '560px',
-          width: '100%',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          position: 'relative',
-          border: '1px solid var(--edge)',
-        }}
-      >
-        <button
-          onClick={closeModal}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            background: 'transparent',
-            border: 'none',
-            color: 'var(--muted)',
-            fontSize: '24px',
-            cursor: 'pointer',
-            padding: '8px',
-            lineHeight: 1,
-          }}
-        >
-          ×
-        </button>
-
-        {isSubmitted ? (
-          <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <div style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              background: 'var(--orange)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '32px',
-              margin: '0 auto 24px',
-            }}>
-              ✓
-            </div>
-            <h3 style={{
-              fontFamily: 'var(--f-disp)',
-              fontSize: '28px',
-              color: 'var(--chalk)',
-              marginBottom: '12px',
-            }}>
-              Application Received
-            </h3>
-            <p style={{
-              color: 'var(--muted)',
-              fontSize: '14px',
-              lineHeight: 1.6,
-            }}>
-              We will be in touch within 48 hours. Get ready to elevate your game.
-            </p>
+    <div ref={containerRef} style={{
+      background: '#0a0a0a',
+      borderRadius: '16px',
+      border: '1px solid rgba(238, 236, 229, 0.1)',
+      width: '100%',
+      maxWidth: '520px',
+      overflow: 'hidden',
+      position: 'relative',
+    }}>
+      {isSubmitted ? (
+        <div style={{ padding: '60px 40px', textAlign: 'center' }}>
+          <div style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '50%',
+            background: 'var(--orange)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '32px',
+            margin: '0 auto 24px',
+          }}>
+            ✓
           </div>
-        ) : (
-          <>
-            <h2 style={{
-              fontFamily: 'var(--f-disp)',
-              fontSize: '32px',
-              color: 'var(--chalk)',
-              marginBottom: '8px',
-            }}>
-              Join APEX
-            </h2>
-            <p style={{
-              color: 'var(--muted)',
-              fontSize: '13px',
-              marginBottom: '32px',
-            }}>
-              Take the first step toward becoming a champion.
-            </p>
+          <h2 style={{
+            fontFamily: 'var(--f-disp)',
+            fontSize: '28px',
+            color: 'var(--chalk)',
+            marginBottom: '12px',
+          }}>
+            Application Received
+          </h2>
+          <p style={{ color: 'rgba(238, 236, 229, 0.6)', fontSize: '14px' }}>
+            We will be in touch within 48 hours.
+          </p>
+          <Link href="/" style={{
+            display: 'inline-block',
+            marginTop: '24px',
+            color: 'var(--orange)',
+            textDecoration: 'none',
+            fontSize: '14px',
+          }}>
+            ← Back to Home
+          </Link>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} style={{ padding: '40px' }}>
+          <h2 style={{
+            fontFamily: 'var(--f-disp)',
+            fontSize: '28px',
+            color: 'var(--chalk)',
+            marginBottom: '8px',
+          }}>
+            Join STTA
+          </h2>
+          <p style={{ color: 'rgba(238, 236, 229, 0.6)', fontSize: '13px', marginBottom: '28px' }}>
+            Complete the form below to begin your journey.
+          </p>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {formFields.map((field) => (
-                <div key={field.name}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    letterSpacing: '.1em',
-                    textTransform: 'uppercase',
-                    color: 'var(--chalk)',
-                    marginBottom: '8px',
-                  }}>
-                    {field.label} {field.required && <span style={{ color: 'var(--orange)' }}>*</span>}
-                  </label>
-                  
-                  {field.type === 'select' ? (
-                    <select
-                      name={field.name}
-                      value={formData[field.name] || ''}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        padding: '14px 16px',
-                        background: 'var(--ink)',
-                        border: errors[field.name] ? '1px solid #ff4444' : '1px solid var(--edge)',
-                        borderRadius: '6px',
-                        color: 'var(--chalk)',
-                        fontSize: '14px',
-                        fontFamily: 'var(--f-ui)',
-                        outline: 'none',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <option value="">Select an option</option>
-                      {field.options?.map(opt => (
-                        <option key={opt} value={opt}>{opt}</option>
-                      ))}
-                    </select>
-                  ) : field.type === 'textarea' ? (
-                    <textarea
-                      name={field.name}
-                      value={formData[field.name] || ''}
-                      onChange={handleChange}
-                      placeholder={field.placeholder}
-                      rows={4}
-                      style={{
-                        width: '100%',
-                        padding: '14px 16px',
-                        background: 'var(--ink)',
-                        border: errors[field.name] ? '1px solid #ff4444' : '1px solid var(--edge)',
-                        borderRadius: '6px',
-                        color: 'var(--chalk)',
-                        fontSize: '14px',
-                        fontFamily: 'var(--f-ui)',
-                        outline: 'none',
-                        resize: 'vertical',
-                        minHeight: '100px',
-                      }}
-                    />
-                  ) : (
-                    <input
-                      type={field.type}
-                      name={field.name}
-                      value={formData[field.name] || ''}
-                      onChange={handleChange}
-                      placeholder={field.placeholder}
-                      style={{
-                        width: '100%',
-                        padding: '14px 16px',
-                        background: 'var(--ink)',
-                        border: errors[field.name] ? '1px solid #ff4444' : '1px solid var(--edge)',
-                        borderRadius: '6px',
-                        color: 'var(--chalk)',
-                        fontSize: '14px',
-                        fontFamily: 'var(--f-ui)',
-                        outline: 'none',
-                      }}
-                    />
-                  )}
-                  
-                  {errors[field.name] && (
-                    <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '6px' }}>
-                      {errors[field.name]}
-                    </p>
-                  )}
-                </div>
+          {/* Program Selection */}
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(238, 236, 229, 0.5)', marginBottom: '10px' }}>
+              Select Program *
+            </label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {programs.map((prog) => (
+                <button
+                  key={prog.id}
+                  type="button"
+                  onClick={() => setSelectedProgram(prog.id)}
+                  style={{
+                    flex: 1,
+                    background: selectedProgram === prog.id ? 'rgba(255, 107, 53, 0.15)' : 'rgba(238, 236, 229, 0.05)',
+                    border: selectedProgram === prog.id ? '1px solid var(--orange)' : '1px solid rgba(238, 236, 229, 0.1)',
+                    borderRadius: '8px',
+                    padding: '12px 8px',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                  }}
+                >
+                  <div style={{ fontSize: '13px', fontWeight: 600, color: selectedProgram === prog.id ? 'var(--orange)' : 'var(--chalk)' }}>
+                    {prog.title}
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'rgba(238, 236, 229, 0.5)', marginTop: '2px' }}>
+                    {prog.subtitle}
+                  </div>
+                </button>
               ))}
+            </div>
+            {errors.program && <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '8px' }}>{errors.program}</p>}
+          </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
+          {/* Personal Details */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+            <div>
+              <input
+                type="text"
+                name="name"
+                value={formData.name || ''}
+                onChange={handleChange}
+                placeholder="Full Name *"
                 style={{
-                  marginTop: '16px',
-                  padding: '18px 32px',
-                  background: isSubmitting ? 'var(--muted)' : 'var(--orange)',
-                  color: 'var(--ink)',
-                  border: 'none',
-                  borderRadius: '99px',
+                  width: '100%',
+                  padding: '14px 16px',
+                  background: 'rgba(238, 236, 229, 0.05)',
+                  border: errors.name ? '1px solid #ff4444' : '1px solid rgba(238, 236, 229, 0.1)',
+                  borderRadius: '8px',
+                  color: 'var(--chalk)',
                   fontSize: '14px',
-                  fontWeight: 700,
-                  letterSpacing: '.04em',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  transition: 'background 0.3s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
+                  outline: 'none',
                 }}
-              >
-                {isSubmitting ? (
-                  <>
-                    <span style={{
-                      width: '16px',
-                      height: '16px',
-                      border: '2px solid var(--ink)',
-                      borderTopColor: 'transparent',
-                      borderRadius: '50%',
-                      animation: 'spin 0.8s linear infinite',
-                    }} />
-                    Submitting...
-                  </>
-                ) : (
-                  'Submit Application'
-                )}
-              </button>
-            </form>
-          </>
-        )}
-      </div>
-      
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+              />
+              {errors.name && <p style={{ color: '#ff4444', fontSize: '11px', marginTop: '4px' }}>{errors.name}</p>}
+            </div>
+            <div>
+              <input
+                type="email"
+                name="email"
+                value={formData.email || ''}
+                onChange={handleChange}
+                placeholder="Email *"
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  background: 'rgba(238, 236, 229, 0.05)',
+                  border: errors.email ? '1px solid #ff4444' : '1px solid rgba(238, 236, 229, 0.1)',
+                  borderRadius: '8px',
+                  color: 'var(--chalk)',
+                  fontSize: '14px',
+                  outline: 'none',
+                }}
+              />
+              {errors.email && <p style={{ color: '#ff4444', fontSize: '11px', marginTop: '4px' }}>{errors.email}</p>}
+            </div>
+          </div>
+
+          {/* Phone & Level */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone || ''}
+              onChange={handleChange}
+              placeholder="Phone"
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                background: 'rgba(238, 236, 229, 0.05)',
+                border: '1px solid rgba(238, 236, 229, 0.1)',
+                borderRadius: '8px',
+                color: 'var(--chalk)',
+                fontSize: '14px',
+                outline: 'none',
+              }}
+            />
+            <select
+              name="level"
+              value={formData.level || ''}
+              onChange={handleChange}
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                background: 'rgba(238, 236, 229, 0.05)',
+                border: '1px solid rgba(238, 236, 229, 0.1)',
+                borderRadius: '8px',
+                color: formData.level ? 'var(--chalk)' : 'rgba(238, 236, 229, 0.5)',
+                fontSize: '14px',
+                outline: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="" style={{ color: 'rgba(238, 236, 229, 0.5)' }}>Select Level</option>
+              <option value="Beginner" style={{ background: '#0a0a0a', color: 'var(--chalk)' }}>Beginner - New to table tennis</option>
+              <option value="Intermediate" style={{ background: '#0a0a0a', color: 'var(--chalk)' }}>Intermediate - Playing 1-2 years</option>
+              <option value="Advanced" style={{ background: '#0a0a0a', color: 'var(--chalk)' }}>Advanced - Tournament experience</option>
+              <option value="Competitive" style={{ background: '#0a0a0a', color: 'var(--chalk)' }}>Competitive - Regional/National level</option>
+            </select>
+          </div>
+
+          {/* Message */}
+          <textarea
+            name="message"
+            value={formData.message || ''}
+            onChange={handleChange}
+            placeholder="Tell us about yourself..."
+            rows={3}
+            style={{
+              width: '100%',
+              padding: '14px 16px',
+              background: 'rgba(238, 236, 229, 0.05)',
+              border: '1px solid rgba(238, 236, 229, 0.1)',
+              borderRadius: '8px',
+              color: 'var(--chalk)',
+              fontSize: '14px',
+              outline: 'none',
+              resize: 'none',
+              marginBottom: '24px',
+            }}
+          />
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            style={{
+              width: '100%',
+              padding: '16px',
+              background: isSubmitting ? 'rgba(238, 236, 229, 0.3)' : 'var(--chalk)',
+              color: 'var(--ink)',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 700,
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {isSubmitting ? 'Submitting...' : 'Submit Application'}
+          </button>
+        </form>
+      )}
     </div>
   )
 }

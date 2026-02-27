@@ -70,6 +70,16 @@ export function MobileNav({ onMenuOpen }: MobileNavProps) {
   const [activeSection, setActiveSection] = useState('home')
   const [lastScrollY, setLastScrollY] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    // Check auth status
+    const user = localStorage.getItem('portal_user')
+    if (user) {
+      const userData = JSON.parse(user)
+      setIsLoggedIn(userData.isLoggedIn)
+    }
+  }, [])
 
   const navItems: NavItem[] = [
     { id: 'home', icon: <HomeIcon />, label: 'Home', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
@@ -233,6 +243,7 @@ export function MobileNav({ onMenuOpen }: MobileNavProps) {
                 { label: 'About', href: '#about' },
                 { label: 'Stories', href: '#blog' },
                 { label: 'Join', href: '#join' },
+                ...(!isLoggedIn ? [{ label: 'Login', href: '/login' }] : [{ label: 'My Portal', href: '/portal' }]),
                 { label: 'Contact', href: 'mailto:apex@stteresas.edu' },
               ].map((item) => (
                 <a

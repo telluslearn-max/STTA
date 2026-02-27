@@ -1,11 +1,11 @@
 'use client'
 
 import { useRef } from 'react'
+import Link from 'next/link'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useCardTilt } from '@/core/hooks/useCardTilt'
-import { ApplicationForm } from '../application-form/ApplicationForm'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -91,7 +91,34 @@ export function DesktopJoin() {
           One application. Three programs. Zero ceiling. Tell us where you are and we will tell you where you are going.
         </p>
         <div className="mag-btn-wrap reveal" style={{ display: 'inline-block', position: 'relative', zIndex: 1 }}>
-          <ApplicationForm />
+          <Link href="/apply" style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '16px',
+            background: 'var(--chalk)',
+            color: 'var(--ink)',
+            border: 'none',
+            padding: '20px 44px',
+            borderRadius: '99px',
+            fontFamily: 'var(--f-ui)',
+            fontSize: '15px',
+            fontWeight: 700,
+            letterSpacing: '.04em',
+            textDecoration: 'none',
+            cursor: 'pointer',
+          }}>
+            <span>Start Your Application</span>
+            <span style={{
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              background: 'var(--orange)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '14px',
+            }}>→</span>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,10 +1,10 @@
 'use client'
 
 import { useRef } from 'react'
+import Link from 'next/link'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ApplicationForm } from '../application-form/ApplicationForm'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -76,9 +76,37 @@ export function MobileJoin() {
           One application. Three programs. Zero ceiling.
         </p>
         <div className="mag-btn-wrap reveal" style={{ display: 'inline-block', position: 'relative', zIndex: 1 }}>
-          <ApplicationForm />
+          <Link href="/apply" style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            background: 'var(--chalk)',
+            color: 'var(--ink)',
+            border: 'none',
+            padding: '16px 32px',
+            borderRadius: '99px',
+            fontFamily: 'var(--f-ui)',
+            fontSize: '14px',
+            fontWeight: 700,
+            letterSpacing: '.04em',
+            textDecoration: 'none',
+            width: '100%',
+          }}>
+            <span>Start Application</span>
+            <span style={{
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              background: 'var(--orange)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '12px',
+            }}>→</span>
+          </Link>
         </div>
-      </div>
+        </div>
     </section>
   )
 }
