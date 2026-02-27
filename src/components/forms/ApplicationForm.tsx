@@ -160,13 +160,13 @@ export function ApplicationForm() {
         style={{
           background: 'var(--plate)',
           borderRadius: isMobileModal ? '24px 24px 0 0' : '12px',
-          padding: isMobileModal ? '24px' : '48px',
-          maxWidth: '560px',
+          padding: isMobileModal ? '20px' : '48px',
+          maxWidth: isMobileModal ? '100%' : '560px',
           width: '100%',
-          maxHeight: isMobileModal ? '85vh' : '90vh',
+          maxHeight: isMobileModal ? '90vh' : '90vh',
           overflowY: 'auto',
           position: 'relative',
-          border: '1px solid var(--edge)',
+          border: isMobileModal ? 'none' : '1px solid var(--edge)',
           animation: isMobileModal ? 'slideUp 0.3s ease-out' : undefined,
         }}
       >
