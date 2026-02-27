@@ -867,7 +867,12 @@ a, button, input, select, textarea {
     padding-bottom: 80px;
   }
 
-  /* Hide desktop nav on mobile */
+  /* Hide desktop nav completely on mobile */
+  nav:first-of-type {
+    display: none !important;
+  }
+
+  /* Hide desktop nav links and CTA on mobile */
   nav ul {
     display: none !important;
   }
