@@ -13,7 +13,7 @@ const navLinks = [
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false)
-  const { isMobile } = useDevice()
+  const { isMobile, isHydrated } = useDevice()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +23,7 @@ export function Nav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  if (isMobile) return null
+  if (!isHydrated || isMobile) return null
 
   return (
     <nav

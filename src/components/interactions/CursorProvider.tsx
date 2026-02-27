@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useCallback, ReactNode } from 'react'
 import { useCursor, CursorState } from '@/hooks/useCursor'
+import { useDevice } from '@/hooks/useDevice'
 
 interface CursorContextType {
   setCursorState: (state: CursorState) => void
@@ -25,10 +26,19 @@ interface CursorProviderProps {
 
 export function CursorProvider({ children }: CursorProviderProps) {
   const { state, setState, position, isVisible } = useCursor()
+  const { isMobile, isHydrated } = useDevice()
 
   const setCursorState = useCallback((newState: CursorState) => {
     setState(newState)
   }, [setState])
+
+  if (!isHydrated || isMobile) {
+    return (
+      <CursorContext.Provider value={{ setCursorState, position, isVisible }}>
+        {children}
+      </CursorContext.Provider>
+    )
+  }
 
   return (
     <CursorContext.Provider value={{ setCursorState, position, isVisible }}>
