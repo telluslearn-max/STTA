@@ -5,6 +5,7 @@ import { Hero } from '@/features/hero/Hero'
 import { Marquee } from '@/features/hero/Marquee'
 import { About } from '@/features/about/About'
 import { Programs } from '@/features/programs/Programs'
+import { CoachesSection } from '@/features/coaches/CoachesSection'
 import { Notifications } from '@/features/updates/Updates'
 import { Blog } from '@/features/stories/Stories'
 import { Join } from '@/features/join/Join'
@@ -26,6 +27,7 @@ export default function Home() {
               <Marquee />
               <About />
               <Programs />
+              <CoachesSection />
               <Notifications />
               <Blog />
               <Join />
