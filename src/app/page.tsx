@@ -10,11 +10,15 @@ import { ScheduleSection } from '@/features/schedule/ScheduleSection'
 import { Notifications } from '@/features/updates/Updates'
 import { Blog } from '@/features/stories/Stories'
 import { Join } from '@/features/join/Join'
+import { FAQAccordion } from '@/features/faq/FAQAccordion'
+import { ContactSection } from '@/features/contact/ContactSection'
+import { NewsletterSignup } from '@/features/newsletter/NewsletterSignup'
 import { Footer } from '@/features/footer/Footer'
 import { CursorProvider } from '@/core/providers/CursorProvider'
 import { GSAPProvider } from '@/core/providers/GSAPProvider'
 import { SmoothScrollProvider } from '@/core/providers/SmoothScrollProvider'
 import { DeviceProvider } from '@/core/providers/DeviceProvider'
+import { AnnouncementBar } from '@/features/announcement/AnnouncementBar'
 
 export default function Home() {
   return (
@@ -23,6 +27,7 @@ export default function Home() {
         <SmoothScrollProvider>
           <CursorProvider>
             <main>
+              <AnnouncementBar />
               <Navigation />
               <Hero />
               <Marquee />
@@ -32,7 +37,10 @@ export default function Home() {
               <ScheduleSection />
               <Notifications />
               <Blog />
+              <FAQAccordion />
               <Join />
+              <ContactSection />
+              <NewsletterSignup />
               <Footer />
             </main>
           </CursorProvider>

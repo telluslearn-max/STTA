@@ -120,6 +120,22 @@ export function PortalNav() {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <Link
+          href="/"
+          style={{
+            padding: '8px 16px',
+            background: 'var(--orange)',
+            border: 'none',
+            borderRadius: '6px',
+            color: 'var(--ink)',
+            fontSize: '13px',
+            fontWeight: 600,
+            cursor: 'pointer',
+            textDecoration: 'none',
+          }}
+        >
+          ← Home
+        </Link>
         {user && (
           <span style={{
             fontSize: '13px',
