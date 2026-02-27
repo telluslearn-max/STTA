@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { MagneticLink, MagneticButton } from '../interactions/MagneticButton'
+import { useDevice } from '@/hooks/useDevice'
 
 const navLinks = [
   { href: '#programs', label: 'Programs' },
@@ -12,6 +13,7 @@ const navLinks = [
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false)
+  const { isMobile } = useDevice()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +22,8 @@ export function Nav() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  if (isMobile) return null
 
   return (
     <nav
