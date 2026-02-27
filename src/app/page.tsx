@@ -6,6 +6,7 @@ import { Marquee } from '@/features/hero/Marquee'
 import { About } from '@/features/about/About'
 import { Programs } from '@/features/programs/Programs'
 import { CoachesSection } from '@/features/coaches/CoachesSection'
+import { ScheduleSection } from '@/features/schedule/ScheduleSection'
 import { Notifications } from '@/features/updates/Updates'
 import { Blog } from '@/features/stories/Stories'
 import { Join } from '@/features/join/Join'
@@ -28,6 +29,7 @@ export default function Home() {
               <About />
               <Programs />
               <CoachesSection />
+              <ScheduleSection />
               <Notifications />
               <Blog />
               <Join />

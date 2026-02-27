@@ -84,6 +84,7 @@ export function MobileNav({ onMenuOpen }: MobileNavProps) {
   const navItems: NavItem[] = [
     { id: 'home', icon: <HomeIcon />, label: 'Home', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
     { id: 'programs', icon: <ListIcon />, label: 'Programs', href: '#programs' },
+    { id: 'schedule', icon: <ListIcon />, label: 'Schedule', href: '#schedule' },
     { id: 'stories', icon: <BookIcon />, label: 'Stories', href: '#blog' },
     { id: 'join', icon: <RocketIcon />, label: 'Join', href: '#join' },
     { id: 'menu', icon: <MenuIcon />, label: 'Menu', action: () => setMenuOpen(true) },
@@ -240,6 +241,7 @@ export function MobileNav({ onMenuOpen }: MobileNavProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {[
                 { label: 'Programs', href: '#programs' },
+                { label: 'Schedule', href: '#schedule' },
                 { label: 'About', href: '#about' },
                 { label: 'Stories', href: '#blog' },
                 { label: 'Join', href: '#join' },

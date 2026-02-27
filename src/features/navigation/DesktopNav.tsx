@@ -6,6 +6,7 @@ import { useDevice } from '@/core/hooks/useDevice'
 
 const navLinks = [
   { href: '#programs', label: 'Programs' },
+  { href: '#schedule', label: 'Schedule' },
   { href: '#notifs', label: 'Updates' },
   { href: '#blog', label: 'Stories' },
   { href: '#join', label: 'Membership' },
