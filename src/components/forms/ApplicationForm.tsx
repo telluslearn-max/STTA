@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from '@/lib/gsap'
+import { useDevice } from '@/hooks/useDevice'
 
 interface FormField {
   name: string
@@ -29,8 +30,11 @@ export function ApplicationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   
+  const { isMobile, isHydrated } = useDevice()
   const modalRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+
+  const isMobileModal = isHydrated && isMobile
 
   useGSAP(() => {
     if (!modalRef.current) return
@@ -143,10 +147,11 @@ export function ApplicationForm() {
         background: 'rgba(0,0,0,0.85)',
         backdropFilter: 'blur(8px)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: isMobileModal ? 'flex-end' : 'center',
         justifyContent: 'center',
         zIndex: 10000,
-        padding: '24px',
+        padding: isMobileModal ? '0' : '24px',
+        paddingBottom: isMobileModal ? 'max(16px, env(safe-area-inset-bottom))' : undefined,
       }}
       onClick={(e) => e.target === e.currentTarget && closeModal()}
     >
@@ -154,29 +159,35 @@ export function ApplicationForm() {
         ref={contentRef}
         style={{
           background: 'var(--plate)',
-          borderRadius: '12px',
-          padding: '48px',
+          borderRadius: isMobileModal ? '24px 24px 0 0' : '12px',
+          padding: isMobileModal ? '24px' : '48px',
           maxWidth: '560px',
           width: '100%',
-          maxHeight: '90vh',
+          maxHeight: isMobileModal ? '85vh' : '90vh',
           overflowY: 'auto',
           position: 'relative',
           border: '1px solid var(--edge)',
+          animation: isMobileModal ? 'slideUp 0.3s ease-out' : undefined,
         }}
       >
         <button
           onClick={closeModal}
           style={{
             position: 'absolute',
-            top: '20px',
-            right: '20px',
+            top: isMobileModal ? '16px' : '20px',
+            right: isMobileModal ? '16px' : '20px',
             background: 'transparent',
             border: 'none',
             color: 'var(--muted)',
-            fontSize: '24px',
+            fontSize: isMobileModal ? '28px' : '24px',
             cursor: 'pointer',
-            padding: '8px',
+            padding: isMobileModal ? '12px' : '8px',
             lineHeight: 1,
+            width: isMobileModal ? '44px' : 'auto',
+            height: isMobileModal ? '44px' : 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           ×
@@ -217,7 +228,7 @@ export function ApplicationForm() {
           <>
             <h2 style={{
               fontFamily: 'var(--f-disp)',
-              fontSize: '32px',
+              fontSize: isMobileModal ? '28px' : '32px',
               color: 'var(--chalk)',
               marginBottom: '8px',
             }}>
@@ -225,8 +236,8 @@ export function ApplicationForm() {
             </h2>
             <p style={{
               color: 'var(--muted)',
-              fontSize: '13px',
-              marginBottom: '32px',
+              fontSize: isMobileModal ? '14px' : '13px',
+              marginBottom: isMobileModal ? '24px' : '32px',
             }}>
               Take the first step toward becoming a champion.
             </p>
@@ -364,6 +375,10 @@ export function ApplicationForm() {
       <style>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+        @keyframes slideUp {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
         }
       `}</style>
     </div>
