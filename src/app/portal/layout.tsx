@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PortalNav } from '@/components/portal/PortalNav'
+import { PortalBottomNav } from '@/components/portal/PortalBottomNav'
+import { PortalMoreMenu } from '@/components/portal/PortalMoreMenu'
+import { useDevice } from '@/hooks/useDevice'
 
 export default function PortalLayout({
   children,
@@ -10,8 +13,10 @@ export default function PortalLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
+  const { isPhone, isHydrated } = useDevice()
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false)
 
   useEffect(() => {
     const checkAuth = () => {
@@ -69,14 +74,41 @@ export default function PortalLayout({
 
   return (
     <>
+      {isPhone && isHydrated && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 0,
+            pointerEvents: 'none',
+          }}
+        >
+          <div className="m-gradient-orbs">
+            <div className="m-orb m-orb-1" />
+            <div className="m-orb m-orb-2" />
+            <div className="m-orb m-orb-3" />
+          </div>
+          <div className="m-grain-overlay" />
+        </div>
+      )}
       <PortalNav />
       <main style={{
         minHeight: '100vh',
-        background: '#0a0a0a',
-        paddingTop: '64px',
+        background: isPhone && isHydrated ? 'transparent' : '#0a0a0a',
+        paddingTop: isPhone && isHydrated ? '80px' : '64px',
+        paddingBottom: isPhone && isHydrated ? '100px' : '0',
+        position: 'relative',
+        zIndex: 1,
       }}>
         {children}
       </main>
+      {isPhone && isHydrated && (
+        <PortalBottomNav onMoreClick={() => setMoreMenuOpen(true)} />
+      )}
+      <PortalMoreMenu 
+        isOpen={moreMenuOpen} 
+        onClose={() => setMoreMenuOpen(false)} 
+      />
     </>
   )
 }

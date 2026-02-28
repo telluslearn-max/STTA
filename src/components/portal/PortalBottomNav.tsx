@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useDevice } from '@/core/hooks/useDevice'
+import { useState, useEffect, useRef } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 interface NavItem {
   id: string
   icon: React.ReactNode
   label: string
-  href?: string
+  href: string
 }
 
 const HomeIcon = () => (
@@ -17,11 +18,10 @@ const HomeIcon = () => (
   </svg>
 )
 
-const TargetIcon = () => (
+const TrendingIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <circle cx="12" cy="12" r="6" />
-    <circle cx="12" cy="12" r="2" />
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
   </svg>
 )
 
@@ -34,28 +34,32 @@ const CalendarIcon = () => (
   </svg>
 )
 
-const LightningIcon = () => (
+const MoreIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    <circle cx="12" cy="12" r="1" />
+    <circle cx="19" cy="12" r="1" />
+    <circle cx="5" cy="12" r="1" />
   </svg>
 )
 
-export function MobileNav() {
-  const { isPhone, isHydrated } = useDevice()
+interface PortalBottomNavProps {
+  onMoreClick: () => void
+}
+
+export function PortalBottomNav({ onMoreClick }: PortalBottomNavProps) {
+  const pathname = usePathname()
+  const router = useRouter()
   const [isVisible, setIsVisible] = useState(true)
-  const [activeSection, setActiveSection] = useState('home')
   const [lastScrollY, setLastScrollY] = useState(0)
 
   const navItems: NavItem[] = [
-    { id: 'home', icon: <HomeIcon />, label: 'Home', href: '#hero' },
-    { id: 'programs', icon: <TargetIcon />, label: 'Programs', href: '#programs' },
-    { id: 'schedule', icon: <CalendarIcon />, label: 'Schedule', href: '#schedule' },
-    { id: 'join', icon: <LightningIcon />, label: 'Join', href: '#join' },
+    { id: 'home', icon: <HomeIcon />, label: 'Home', href: '/portal' },
+    { id: 'progress', icon: <TrendingIcon />, label: 'Progress', href: '/portal/progress' },
+    { id: 'schedule', icon: <CalendarIcon />, label: 'Schedule', href: '/portal/schedule' },
+    { id: 'more', icon: <MoreIcon />, label: 'More', href: '#' },
   ]
 
   useEffect(() => {
-    if (!isHydrated || !isPhone) return
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       
@@ -68,34 +72,17 @@ export function MobileNav() {
       }
       
       setLastScrollY(currentScrollY)
-
-      const sections = ['hero', 'programs', 'schedule', 'join']
-      for (const section of sections) {
-        const el = document.getElementById(section)
-        if (el) {
-          const rect = el.getBoundingClientRect()
-          if (rect.top <= 150 && rect.bottom >= 150) {
-            setActiveSection(section === 'hero' ? 'home' : section)
-            break
-          }
-        }
-      }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isPhone, isHydrated, lastScrollY])
+  }, [lastScrollY])
 
   const handleNavClick = (item: NavItem) => {
-    if (item.href) {
-      const element = document.querySelector(item.href)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-      }
+    if (item.id === 'more') {
+      onMoreClick()
     }
   }
-
-  if (!isHydrated || !isPhone) return null
 
   return (
     <nav
@@ -106,17 +93,28 @@ export function MobileNav() {
       }}
     >
       {navItems.map((item) => {
-        const isActive = activeSection === item.id
-        return (
+        const isActive = pathname === item.href
+        const content = (
           <button
             key={item.id}
-            className={`m-action-item ${isActive ? 'active' : ''}`}
+            className={`m-action-item ${isActive && item.id !== 'more' ? 'active' : ''}`}
             onClick={() => handleNavClick(item)}
+            style={{ textDecoration: 'none' }}
           >
             <span className="m-action-icon">{item.icon}</span>
             <span className="m-action-label">{item.label}</span>
           </button>
         )
+
+        if (item.href && item.id !== 'more') {
+          return (
+            <Link key={item.id} href={item.href} style={{ textDecoration: 'none', flex: 1, display: 'flex', justifyContent: 'center' }}>
+              {content}
+            </Link>
+          )
+        }
+
+        return content
       })}
     </nav>
   )

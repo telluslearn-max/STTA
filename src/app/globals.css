@@ -1673,4 +1673,34 @@ a, button, input, select, textarea {
     margin-bottom: 60px;
     max-width: 500px;
   }
+
+  /* Panel slide-in animation */
+  @keyframes panelSlideIn {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .m-panel-slide-in {
+    animation: panelSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Touch feedback - scale on tap */
+  .m-touch-feedback {
+    transition: transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .m-touch-feedback:active {
+    transform: scale(0.95);
+  }
+
+  /* Top bar */
+  .m-top-bar {
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    backdrop-filter: blur(40px) saturate(180%);
+  }
 }

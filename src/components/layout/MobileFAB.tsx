@@ -1,19 +1,28 @@
 'use client'
 
 import { useDevice } from '@/hooks/useDevice'
+import Link from 'next/link'
 
-interface MobileFABProps {
-  onClick?: () => void
-}
+const ApplyIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+)
 
-export function MobileFAB({ onClick }: MobileFABProps) {
+export function MobileFAB() {
   const { isPhone, isHydrated } = useDevice()
 
   if (!isHydrated || !isPhone) return null
 
   return (
-    <button className="m-fab" onClick={onClick}>
-      +
-    </button>
+    <Link href="/apply" className="m-fab" style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textDecoration: 'none',
+    }}>
+      <ApplyIcon />
+    </Link>
   )
 }
