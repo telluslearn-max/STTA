@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useDevice } from '@/hooks/useDevice'
+import { useDevice } from '@/core/hooks/useDevice'
 import Link from 'next/link'
 
 interface MobileTopBarProps {
@@ -42,11 +42,7 @@ export function MobileTopBar({ onNotificationsClick, onSettingsClick, unreadCoun
     return () => window.removeEventListener('scroll', handleScroll)
   }, [isPhone, isHydrated])
 
-  // Debug: Force show on mobile for testing
-  console.log('[MobileTopBar] isPhone:', isPhone, 'isHydrated:', isHydrated)
-  
-  // if (!isHydrated || !isPhone) return null
-  if (!isPhone) return null
+  if (!isHydrated || !isPhone) return null
 
   const handleLogoClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { MagneticLink, MagneticButton } from '../interactions/MagneticButton'
-import { useDevice } from '@/hooks/useDevice'
+import { useDevice } from '@/core/hooks/useDevice'
 
 const navLinks = [
   { href: '#programs', label: 'Programs' },

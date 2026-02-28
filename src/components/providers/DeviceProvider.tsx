@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, ReactNode } from 'react'
-import { useDevice, DeviceInfo } from '@/hooks/useDevice'
+import { useDevice, DeviceInfo } from '@/core/hooks/useDevice'
 
 const DeviceContext = createContext<DeviceInfo | null>(null)
 

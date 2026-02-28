@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useDevice } from '@/hooks/useDevice'
+import { useDevice } from '@/core/hooks/useDevice'
 
 interface User {
   email: string

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from '@/lib/gsap'
-import { useDevice } from '@/hooks/useDevice'
+import { useDevice } from '@/core/hooks/useDevice'
 
 interface NavItem {
   id: string

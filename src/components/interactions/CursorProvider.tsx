@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useCallback, ReactNode } from 'react'
 import { useCursor, CursorState } from '@/hooks/useCursor'
-import { useDevice } from '@/hooks/useDevice'
+import { useDevice } from '@/core/hooks/useDevice'
 
 interface CursorContextType {
   setCursorState: (state: CursorState) => void

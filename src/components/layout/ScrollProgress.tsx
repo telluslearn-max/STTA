@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useDevice } from '@/hooks/useDevice'
+import { useDevice } from '@/core/hooks/useDevice'
 import { gsap } from '@/lib/gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 

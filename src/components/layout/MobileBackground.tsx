@@ -1,6 +1,6 @@
 'use client'
 
-import { useDevice } from '@/hooks/useDevice'
+import { useDevice } from '@/core/hooks/useDevice'
 
 export function MobileBackground() {
   const { isPhone, isHydrated } = useDevice()

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { PortalNav } from '@/components/portal/PortalNav'
 import { PortalBottomNav } from '@/components/portal/PortalBottomNav'
 import { PortalMoreMenu } from '@/components/portal/PortalMoreMenu'
-import { useDevice } from '@/hooks/useDevice'
+import { useDevice } from '@/core/hooks/useDevice'
 
 export default function PortalLayout({
   children,
