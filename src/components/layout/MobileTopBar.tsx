@@ -63,10 +63,10 @@ export function MobileTopBar({ onNotificationsClick, onSettingsClick, unreadCoun
         alignItems: 'center',
         justifyContent: 'space-between',
         zIndex: 1000,
-        background: scrolled ? 'var(--m-glass-bg)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(40px) saturate(180%)' : 'none',
-        WebkitBackdropFilter: scrolled ? 'blur(40px) saturate(180%)' : 'none',
-        borderBottom: scrolled ? '1px solid var(--m-glass-border)' : 'none',
+        background: scrolled ? 'rgba(17, 17, 17, 0.95)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(40px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(40px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
         transition: 'background 0.3s, backdrop-filter 0.3s, border-color 0.3s',
       }}
     >

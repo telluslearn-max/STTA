@@ -16,11 +16,21 @@ export function MobileFAB() {
   if (!isHydrated || !isPhone) return null
 
   return (
-    <Link href="/apply" className="m-fab" style={{
+    <Link href="/apply" style={{
+      position: 'fixed',
+      bottom: '100px',
+      right: '24px',
+      width: '60px',
+      height: '60px',
+      borderRadius: '30px',
+      background: 'linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%)',
+      boxShadow: '0 8px 32px rgba(255, 107, 53, 0.4)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      zIndex: 9998,
       textDecoration: 'none',
+      color: '#000000',
     }}>
       <ApplyIcon />
     </Link>
