@@ -8,6 +8,20 @@ export const colors = {
   muted: 'rgba(238,236,229,.36)',
 } as const
 
+export const mobileColors = {
+  accentPrimary: '#ff6b35',
+  accentSecondary: '#ff8c42',
+  accentTertiary: '#00ff88',
+  bgPrimary: '#000000',
+  bgSecondary: '#0a0a0a',
+  bgElevated: '#111111',
+  glassBg: 'rgba(17, 17, 17, 0.4)',
+  glassBorder: 'rgba(255, 255, 255, 0.05)',
+  textPrimary: '#ffffff',
+  textSecondary: '#999999',
+  textTertiary: '#666666',
+} as const
+
 export const typography = {
   display: 'Bebas Neue',
   ui: 'Syne',

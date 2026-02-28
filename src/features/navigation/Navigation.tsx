@@ -2,12 +2,15 @@
 
 import { useDevice } from '@/core/hooks/useDevice'
 import { DesktopNav } from './DesktopNav'
+import { TabletNav } from './TabletNav'
 import { MobileNav } from './MobileNav'
 
 export function Navigation() {
-  const { isMobile, isHydrated } = useDevice()
+  const { isPhone, isTablet, isHydrated } = useDevice()
 
   if (!isHydrated) return null
 
-  return isMobile ? <MobileNav /> : <DesktopNav />
+  if (isPhone) return <MobileNav />
+  if (isTablet) return <TabletNav />
+  return <DesktopNav />
 }

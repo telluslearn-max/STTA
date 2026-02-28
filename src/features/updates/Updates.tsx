@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useDevice } from '@/hooks/useDevice'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -16,15 +17,14 @@ const notifications = [
 
 export function Notifications() {
   const sectionRef = useRef<HTMLElement>(null)
+  const { isPhone, isHydrated } = useDevice()
+  const isMobile = isPhone && isHydrated
 
   useGSAP(() => {
     if (!sectionRef.current) return
 
-    console.log('[Notifications] Setting up ScrollTrigger')
-
-    const rows = sectionRef.current.querySelectorAll('.notif-row')
-    console.log('[Notifications] Found rows:', rows.length)
-
+    const rows = sectionRef.current.querySelectorAll('.notif-row, .m-reveal-card')
+    
     gsap.from(rows, {
       opacity: 0,
       y: 30,
@@ -35,9 +35,6 @@ export function Notifications() {
         trigger: sectionRef.current,
         start: 'top 75%',
         once: true,
-        onEnter: () => {
-          console.log('[Notifications] ScrollTrigger fired!')
-        },
       },
     })
   }, { scope: sectionRef })
@@ -45,18 +42,20 @@ export function Notifications() {
   return (
     <section id="notifs" ref={sectionRef} style={{
       borderTop: '1px solid var(--edge)',
-      padding: '80px 48px 120px',
+      padding: isMobile ? '60px 20px 80px' : '80px 48px 120px',
       background: 'var(--plate)',
     }}>
       <div style={{
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        marginBottom: '48px',
+        alignItems: isMobile ? 'flex-start' : 'flex-end',
+        marginBottom: isMobile ? '32px' : '48px',
+        gap: isMobile ? '16px' : 0,
       }}>
         <h2 style={{
           fontFamily: 'var(--f-disp)',
-          fontSize: 'clamp(36px, 5vw, 72px)',
+          fontSize: isMobile ? '36px' : 'clamp(36px, 5vw, 72px)',
           letterSpacing: '.02em',
           lineHeight: 1,
         }}>
@@ -69,15 +68,15 @@ export function Notifications() {
           fontSize: '10px',
           letterSpacing: '.2em',
           textTransform: 'uppercase',
-          color: 'var(--orange)',
+          color: isMobile ? 'var(--m-accent-primary)' : 'var(--orange)',
           paddingBottom: '6px',
         }}>
           <div style={{
             width: '8px',
             height: '8px',
             borderRadius: '50%',
-            background: 'var(--orange)',
-            boxShadow: '0 0 10px var(--orange)',
+            background: isMobile ? 'var(--m-accent-primary)' : 'var(--orange)',
+            boxShadow: isMobile ? '0 0 10px var(--m-accent-primary)' : '0 0 10px var(--orange)',
             animation: 'livePulse 1.4s ease-in-out infinite',
           }} />
           Live Updates
@@ -87,15 +86,16 @@ export function Notifications() {
       {notifications.map((notif, i) => (
         <div
           key={i}
-          className="notif-row reveal"
+          className={isMobile ? 'm-reveal-card' : 'notif-row'}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '24px',
-            padding: '24px 0',
-            borderBottom: '1px solid var(--edge)',
+            gap: isMobile ? '16px' : '24px',
+            padding: isMobile ? '24px' : '24px 0',
+            borderBottom: isMobile ? 'none' : '1px solid var(--edge)',
             position: 'relative',
             cursor: 'pointer',
+            marginBottom: isMobile ? '16px' : 0,
           }}
         >
           <div style={{
@@ -103,49 +103,56 @@ export function Notifications() {
             height: '8px',
             borderRadius: '50%',
             flexShrink: 0,
-            background: notif.isLive ? 'var(--orange)' : 'var(--edge)',
-            boxShadow: notif.isLive ? '0 0 12px var(--orange)' : 'none',
+            background: notif.isLive ? (isMobile ? 'var(--m-accent-primary)' : 'var(--orange)') : 'var(--edge)',
+            boxShadow: notif.isLive ? (isMobile ? '0 0 12px var(--m-accent-primary)' : '0 0 12px var(--orange)') : 'none',
             animation: notif.isLive ? 'livePulse 1.4s ease-in-out infinite' : 'none',
           }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              fontSize: '9px',
-              letterSpacing: '.25em',
+              fontSize: isMobile ? '10px' : '9px',
+              letterSpacing: isMobile ? '.1em' : '.25em',
               textTransform: 'uppercase',
-              color: notif.isLive ? 'var(--orange)' : 'var(--muted)',
+              color: isMobile ? 'var(--m-accent-primary)' : (notif.isLive ? 'var(--orange)' : 'var(--muted)'),
               marginBottom: '5px',
+              fontWeight: 700,
+              padding: isMobile ? '6px 12px' : 0,
+              borderRadius: isMobile ? '12px' : 0,
+              background: isMobile ? 'rgba(255, 107, 53, 0.15)' : 'transparent',
+              border: isMobile ? '1px solid rgba(255, 107, 53, 0.3)' : 'none',
+              display: 'inline-block',
             }}>
               {notif.tag}
             </div>
             <div style={{
               fontFamily: 'var(--f-disp)',
-              fontSize: 'clamp(18px, 2.2vw, 28px)',
+              fontSize: isMobile ? '22px' : 'clamp(18px, 2.2vw, 28px)',
               letterSpacing: '.02em',
               color: 'var(--chalk)',
             }}>
               {notif.title}
             </div>
             <div style={{
-              fontSize: '10px',
+              fontSize: isMobile ? '12px' : '10px',
               letterSpacing: '.1em',
-              color: 'var(--muted)',
+              color: isMobile ? 'var(--m-text-secondary)' : 'var(--muted)',
               marginTop: '4px',
             }}>
               {notif.time}
             </div>
           </div>
           <div style={{
-            width: '36px',
-            height: '36px',
+            width: isMobile ? '32px' : '36px',
+            height: isMobile ? '32px' : '36px',
             borderRadius: '50%',
-            border: '1px solid var(--edge)',
+            border: isMobile ? 'none' : '1px solid var(--edge)',
+            background: isMobile ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '16px',
             color: 'var(--muted)',
             flexShrink: 0,
-          }} className="notif-action">
+          }}>
             →
           </div>
         </div>

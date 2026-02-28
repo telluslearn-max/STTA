@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useDevice } from '@/hooks/useDevice'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -36,6 +37,7 @@ const programs = [
 
 function ProgramCard({ program, index }: { program: typeof programs[0]; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null)
+  const { isPhone, isHydrated } = useDevice()
 
   useGSAP(() => {
     if (!cardRef.current) return
@@ -74,16 +76,26 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
     }
   })
 
+  const isMobile = isPhone && isHydrated
+  
   return (
     <div
       ref={cardRef}
-      className="prog-card"
+      className={isMobile ? 'm-program-card prog-card' : 'prog-card'}
       style={{
-        background: 'var(--plate)',
-        padding: '40px 36px',
+        background: isMobile ? 'var(--m-glass-bg)' : 'var(--plate)',
+        backdropFilter: isMobile ? 'blur(40px) saturate(180%)' : undefined,
+        WebkitBackdropFilter: isMobile ? 'blur(40px) saturate(180%)' : undefined,
+        border: isMobile ? '1px solid var(--m-glass-border)' : undefined,
+        borderRadius: isMobile ? '32px' : undefined,
+        padding: isMobile ? '36px' : '40px 36px',
         position: 'relative',
         overflow: 'hidden',
         transformStyle: 'preserve-3d',
+        height: isMobile ? '420px' : undefined,
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : undefined,
+        justifyContent: isMobile ? 'space-between' : undefined,
       }}
     >
       <div style={{
@@ -103,29 +115,35 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
         background: 'var(--orange)',
         transition: 'width 0.5s cubic-bezier(.77,0,.175,1)',
       }} className="prog-card-line" />
-      <div style={{
+      <div className={isMobile ? 'm-program-number' : 'card-num'} style={{
         fontFamily: 'var(--f-disp)',
-        fontSize: '72px',
-        color: 'rgba(238,236,229,.04)',
+        fontSize: isMobile ? '120px' : '72px',
+        color: isMobile ? undefined : 'rgba(238,236,229,.04)',
+        background: isMobile ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%)' : undefined,
+        WebkitBackgroundClip: isMobile ? 'text' : undefined,
+        WebkitTextFillColor: isMobile ? 'transparent' : undefined,
+        backgroundClip: isMobile ? 'text' : undefined,
         lineHeight: 1,
         position: 'absolute',
         top: '24px',
         right: '28px',
-      }} className="card-num">
+        letterSpacing: isMobile ? '-5px' : undefined,
+      }}>
         {program.num}
       </div>
       <div style={{
-        fontSize: '9px',
-        letterSpacing: '.28em',
+        fontSize: isMobile ? '11px' : '9px',
+        letterSpacing: isMobile ? '.15em' : '.28em',
         textTransform: 'uppercase',
-        color: 'var(--orange)',
+        color: isMobile ? 'var(--m-accent-primary)' : 'var(--orange)',
+        fontWeight: 600,
         marginBottom: '16px',
-      }}>
+      }} className={isMobile ? 'm-program-tier' : ''}>
         {program.tag}
       </div>
-      <h3 style={{
+      <h3 className={isMobile ? 'm-program-name' : ''} style={{
         fontFamily: 'var(--f-disp)',
-        fontSize: 'clamp(28px, 3vw, 44px)',
+        fontSize: isMobile ? '32px' : 'clamp(28px, 3vw, 44px)',
         letterSpacing: '.02em',
         lineHeight: 1.05,
         color: 'var(--chalk)',
@@ -141,12 +159,12 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
       }}>
         {program.body}
       </p>
-      <div style={{
+      <div className={isMobile ? 'm-program-footer' : ''} style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingTop: '24px',
-        borderTop: '1px solid var(--edge)',
+        borderTop: isMobile ? '1px solid var(--m-glass-border)' : '1px solid var(--edge)',
       }}>
         <div style={{
           fontFamily: 'var(--f-disp)',
@@ -160,18 +178,19 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
             marginLeft: '4px',
           }}>{program.statLabel}</small>
         </div>
-        <a href="#join" style={{
+        <a href="#join" className={isMobile ? 'm-program-arrow' : 'card-arrow'} style={{
           width: '40px',
           height: '40px',
-          border: '1px solid var(--edge)',
+          background: isMobile ? 'linear-gradient(135deg, var(--m-accent-primary), var(--m-accent-secondary))' : undefined,
+          border: isMobile ? 'none' : '1px solid var(--edge)',
           borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '18px',
-          color: 'var(--chalk)',
+          color: isMobile ? '#000000' : 'var(--chalk)',
           textDecoration: 'none',
-        }} className="card-arrow">→</a>
+        }}>→</a>
       </div>
     </div>
   )
@@ -180,6 +199,7 @@ function ProgramCard({ program, index }: { program: typeof programs[0]; index: n
 export function Programs() {
   const sectionRef = useRef<HTMLElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const { isPhone, isHydrated } = useDevice()
 
   useGSAP(() => {
     if (!sectionRef.current || !containerRef.current) return
@@ -242,14 +262,26 @@ export function Programs() {
       </div>
       <div 
         ref={containerRef}
+        className={isPhone && isHydrated ? 'm-carousel-track' : ''}
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '2px',
+          display: isPhone && isHydrated ? 'flex' : 'grid',
+          gridTemplateColumns: isPhone && isHydrated ? undefined : 'repeat(3, 1fr)',
+          gap: isPhone && isHydrated ? '20px' : '2px',
+          overflowX: isPhone && isHydrated ? 'auto' : undefined,
+          scrollSnapType: isPhone && isHydrated ? 'x mandatory' : undefined,
+          paddingBottom: isPhone && isHydrated ? '20px' : undefined,
         }}
       >
         {programs.map((program, i) => (
-          <ProgramCard key={program.num} program={program} index={i} />
+          <div 
+            key={program.num}
+            style={{
+              flex: isPhone && isHydrated ? '0 0 300px' : undefined,
+              scrollSnapAlign: isPhone && isHydrated ? 'center' : undefined,
+            }}
+          >
+            <ProgramCard program={program} index={i} />
+          </div>
         ))}
       </div>
     </section>

@@ -15,7 +15,7 @@ const navLinks = [
 export function DesktopNav() {
   const [scrolled, setScrolled] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const { isHydrated } = useDevice()
+  const { isDesktop, isHydrated } = useDevice()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +23,6 @@ export function DesktopNav() {
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     
-    // Check auth status
     const user = localStorage.getItem('portal_user')
     if (user) {
       const userData = JSON.parse(user)
@@ -33,7 +32,7 @@ export function DesktopNav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  if (!isHydrated) return null
+  if (!isHydrated || !isDesktop) return null
 
   return (
     <nav

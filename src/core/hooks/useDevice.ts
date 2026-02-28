@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 
 export interface DeviceInfo {
+  isPhone: boolean
   isMobile: boolean
   isTablet: boolean
   isDesktop: boolean
@@ -26,9 +27,10 @@ const getDeviceInfo = (): DeviceInfo => {
   const width = window.innerWidth
   const height = window.innerHeight
 
-  const isMobile = width < 1024
+  const isPhone = width < 768
   const isTablet = width >= 768 && width < 1024
   const isDesktop = width >= 1024
+  const isMobile = isPhone || isTablet
   const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
 
   const userAgent = navigator.userAgent.toLowerCase()
@@ -57,6 +59,7 @@ const getDeviceInfo = (): DeviceInfo => {
   const safeAreaTop = isMobile ? (window.outerHeight - window.innerHeight - (window.screen?.height - window.outerHeight)) : 0
 
   return {
+    isPhone,
     isMobile,
     isTablet,
     isDesktop,
@@ -74,6 +77,7 @@ const getDeviceInfo = (): DeviceInfo => {
 }
 
 const getDefaultDeviceInfo = (): DeviceInfo => ({
+  isPhone: false,
   isMobile: false,
   isTablet: false,
   isDesktop: true,

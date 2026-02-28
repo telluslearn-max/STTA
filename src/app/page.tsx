@@ -19,6 +19,9 @@ import { GSAPProvider } from '@/core/providers/GSAPProvider'
 import { SmoothScrollProvider } from '@/core/providers/SmoothScrollProvider'
 import { DeviceProvider } from '@/core/providers/DeviceProvider'
 import { AnnouncementBar } from '@/features/announcement/AnnouncementBar'
+import { LoadingScreen } from '@/components/layout/LoadingScreen'
+import { ScrollProgress } from '@/components/layout/ScrollProgress'
+import { MobileBackground } from '@/components/layout/MobileBackground'
 
 export default function Home() {
   return (
@@ -26,6 +29,9 @@ export default function Home() {
       <DeviceProvider>
         <SmoothScrollProvider>
           <CursorProvider>
+            <MobileBackground />
+            <LoadingScreen />
+            <ScrollProgress />
             <main>
               <AnnouncementBar />
               <Navigation />

@@ -65,7 +65,7 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ onMenuOpen }: MobileNavProps) {
-  const { isMobile, isHydrated } = useDevice()
+  const { isPhone, isHydrated } = useDevice()
   const [isVisible, setIsVisible] = useState(true)
   const [activeSection, setActiveSection] = useState('home')
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -91,7 +91,7 @@ export function MobileNav({ onMenuOpen }: MobileNavProps) {
   ]
 
   useEffect(() => {
-    if (!isHydrated || !isMobile) return
+    if (!isHydrated || !isPhone) return
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY
@@ -121,7 +121,7 @@ export function MobileNav({ onMenuOpen }: MobileNavProps) {
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isMobile, isHydrated, lastScrollY])
+  }, [isPhone, isHydrated, lastScrollY])
 
   const handleNavClick = (item: NavItem) => {
     if (item.action) {
@@ -134,77 +134,30 @@ export function MobileNav({ onMenuOpen }: MobileNavProps) {
     }
   }
 
-  if (!isHydrated || !isMobile) return null
+  if (!isHydrated || !isPhone) return null
 
   return (
     <>
       <nav
+        className="m-bottom-action-bar"
         style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 9999,
-          padding: '12px 16px 32px',
-          paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
-          background: 'rgba(10, 10, 10, 0.85)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(238, 236, 229, 0.08)',
           transform: isVisible ? 'translateY(0)' : 'translateY(100%)',
           transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          maxWidth: '400px',
-          margin: '0 auto',
-        }}>
-          {navItems.map((item) => {
-            const isActive = activeSection === item.id
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item)}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '4px',
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '8px 12px',
-                  borderRadius: '12px',
-                  color: isActive ? 'var(--orange)' : 'rgba(238, 236, 229, 0.5)',
-                  transform: isActive ? 'scale(1.1)' : 'scale(1)',
-                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                }}
-              >
-                <div style={{
-                  width: '28px',
-                  height: '28px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                  {item.icon}
-                </div>
-                <span style={{
-                  fontSize: '9px',
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  fontFamily: 'var(--f-ui)',
-                }}>
-                  {item.label}
-                </span>
-              </button>
-            )
-          })}
-        </div>
+        {navItems.map((item) => {
+          const isActive = activeSection === item.id
+          return (
+            <button
+              key={item.id}
+              className={`m-action-item ${isActive ? 'active' : ''}`}
+              onClick={() => handleNavClick(item)}
+            >
+              <span className="m-action-icon">{item.icon}</span>
+              <span className="m-action-label">{item.label}</span>
+            </button>
+          )
+        })}
       </nav>
 
       {menuOpen && (
