@@ -46,6 +46,9 @@ export function MobileNav() {
   const [activeSection, setActiveSection] = useState('home')
   const [lastScrollY, setLastScrollY] = useState(0)
 
+  // Debug: Force show on mobile for testing
+  console.log('[MobileNav] isPhone:', isPhone, 'isHydrated:', isHydrated)
+
   const navItems: NavItem[] = [
     { id: 'home', icon: <HomeIcon />, label: 'Home', href: '#hero' },
     { id: 'programs', icon: <TargetIcon />, label: 'Programs', href: '#programs' },
@@ -95,12 +98,19 @@ export function MobileNav() {
     }
   }
 
-  if (!isHydrated || !isPhone) return null
+  // Debug: Allow render without hydration check for testing
+  // if (!isHydrated || !isPhone) return null
+  if (!isPhone) return null
 
   return (
     <nav
       className="m-bottom-action-bar"
       style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 9999,
         transform: isVisible ? 'translateY(0)' : 'translateY(100%)',
         transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
